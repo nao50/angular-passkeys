@@ -1,0 +1,17 @@
+<h1>register works!</h1>
+
+<form #form="ngForm" (ngSubmit)="register(form.value)">
+  <div>
+    <label for="email">email: </label>
+    <input
+      name="email"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)"
+      required
+    />
+  </div>
+  <div>
+    <button type="submit">Register</button>
+  </div>
+  <p>Or <a routerLink="/login">Login</a></p>
+</form>

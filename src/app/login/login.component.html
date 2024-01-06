@@ -1,0 +1,20 @@
+<h1>login works!</h1>
+
+<form #form="ngForm" (ngSubmit)="login(form.value)">
+  <div>
+    <label for="username">Username</label>
+    <input
+      name="username"
+      type="text"
+      [ngModel]="email()"
+      (ngModelChange)="email.set($event)"
+      autocomplete="username webauthn"
+      data-1p-ignore
+      required
+    />
+  </div>
+  <div>
+    <button type="submit">Login</button>
+  </div>
+  <p>Or <a routerLink="/register">Register</a></p>
+</form>
