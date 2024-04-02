@@ -27,7 +27,7 @@ export class RegisterComponent {
       return
     }
     await this.generateRegistrationOptions(value.email);
-    await this.verifyRegistration();
+    await this.verifyRegistration(value);
   }
 
   async generateRegistrationOptions(email: string) {
@@ -39,6 +39,7 @@ export class RegisterComponent {
     console.log('Attestation Option:::', option);
     try {
       this.attestationResponse = await startRegistration(option);
+      this.attestationResponse['userId'] = option.user.id;
       this.attestationResponse['email'] = email;
       this.attestationResponse['challenge'] = option.challenge;
       console.log('attestationResponse:', this.attestationResponse);
@@ -48,13 +49,18 @@ export class RegisterComponent {
     }
   }
 
-  async verifyRegistration() {
+  async verifyRegistration(value: { email: string }) {
     try {
       const option2 = await fetch('http://localhost:3000/attestation/result', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(this.attestationResponse),
-      }).then((res) => res)
+      }).then(async (res) => {
+        if(res.status === 409) {
+          await this.generateRegistrationOptions(value.email);
+          await this.verifyRegistration(value);
+        }
+      })
       console.log('Attestation Result:::', option2);
       alert('register success')
     } catch (error) {

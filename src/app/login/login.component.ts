@@ -14,6 +14,7 @@ import { startAuthentication, browserSupportsWebAuthn, browserSupportsWebAuthnAu
 export class LoginComponent implements OnInit {
   // email = signal('email@test.com');
   email = signal('');
+  username = signal('');
   assertionResponse: any = {};
 
   async ngOnInit() {
@@ -37,11 +38,17 @@ export class LoginComponent implements OnInit {
     }).then((res) => res.json());
     console.log('Assertion Option:::', option);
     try {
-      startAuthentication(option, true).then((assertres) => {
+      startAuthentication(option, true).then(async (assertres) => {
+        console.log('email: ', email)
+        console.log('assertres:', assertres);
         this.assertionResponse = assertres;
-        this.assertionResponse['email'] = email;
+
         this.assertionResponse['challenge'] = option.challenge;
-        console.log('assertionResponse:', this.assertionResponse);
+
+        await this.verifyAuthentication();
+        // this.assertionResponse['email'] = email;
+        // this.assertionResponse['challenge'] = option.challenge;
+        // console.log('assertionResponse:', this.assertionResponse);
       })
     } catch (error) {
       console.log({ error });
@@ -69,14 +76,18 @@ export class LoginComponent implements OnInit {
 
   async verifyAuthentication() {
     try {
-      const option2 = await fetch('http://localhost:3000/assertion/result', {
+      const res = await fetch('http://localhost:3000/assertion/result', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(this.assertionResponse),
       // }).then((res) => res.json())
     }).then((res) => res)
-      console.log('Assertion Result:::', option2);
+    if (res.ok) {
+      console.log('Assertion Result:::', res);
       alert('login success')
+    } else {
+      alert('login failed')
+    }
     } catch (error) {
       console.log('verifyRegistration Error', error );
     }

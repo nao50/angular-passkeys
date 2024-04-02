@@ -1,17 +1,28 @@
 <h1>login works!</h1>
 
+<!-- <form #form="ngForm" (ngSubmit)="login(form.value)"> -->
 <form #form="ngForm" (ngSubmit)="login(form.value)">
   <div>
+    <!-- <label for="username">Username</label>
+    <input
+      type="text"
+      name="username"
+      autocomplete="username webauthn"
+      data-1p-ignore
+      required
+    /> -->
     <label for="username">Username</label>
     <input
       name="username"
       type="text"
+      id="username"
       [ngModel]="email()"
       (ngModelChange)="email.set($event)"
       autocomplete="username webauthn"
       data-1p-ignore
       required
     />
+    <!-- <input name="email" id="email" type="email" autocomplete="email" /> -->
   </div>
   <div>
     <button type="submit">Login</button>
